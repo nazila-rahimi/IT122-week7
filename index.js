@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('404 Not Found - The requested resource does not exist.');
     }
-});
+}); 
 
 // Start the server safely
 server.listen(PORT, () => {
