@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details of <%= item.name %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><%= item.name %> Details</h1>
+        <div class="product-detail">
+            <p><strong>Type:</strong> <%= item.type %></p>
+            <p><strong>Year:</strong> <%= item.year %></p>
+            <p><strong>Price:</strong> <%= item.price %></p>
+        </div>
+        <a href="/" class="back-button">Back to Home</a>
+    </div>
+</body>
+</html>

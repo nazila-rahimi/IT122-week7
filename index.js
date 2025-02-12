@@ -1,30 +1,35 @@
-import http from 'http';
+import express from "express";
+import { getAll, getItem } from "./data.js";
 
-// Define port
-const PORT = process.env.PORT || 3000;
+const app = express();
+const PORT = process.env.PORT || 3000; // Replit assigns a port
 
-// Create the server
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('Welcome to IT122!');
-    } else if (req.url === '/about') {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('About Me: My name is Nazila Rahimi, and I am studying IT.');
+//  Set EJS as the view engine
+app.set("views", "templates"); 
+app.set("view engine", "ejs"); //  This tells Express to process EJS files
+
+app.use(express.static("public")); 
+
+// Home Route Display all items
+app.get("/", (req, res) => {
+    const items = getAll();
+    res.render("home", { items }); //  EJS should process "home.ejs"
+});
+
+// Detail Route Show item details
+app.get("/detail", (req, res) => {
+    const id = req.query.id;
+    const item = getItem(id);
+
+    if (item) {
+        res.render("detail", { item }); //  EJS should process "detail.ejs"
     } else {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found - The requested resource does not exist.');
+        res.status(404).send("Item not found");
     }
-}); 
+});
 
 
-// Start the server 
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use. Try stopping the existing process.`);
-    } else {
-        console.error(`Server error: ${err.message}`);
-    }
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
