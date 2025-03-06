@@ -34,4 +34,6 @@ logs/*.log
 # Output of npm build process
 dist/
 build/
-  
+
+
+  config.js
