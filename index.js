@@ -1,6 +1,6 @@
 import express from "express";
-import db from "./data.js"; // ✅ MongoDB connection
-import AppleProduct from "./models/appleproducts.js"; // ✅ Product schema
+import db from "./data.js"; //  MongoDB connection
+import AppleProduct from "./models/appleproducts.js"; //  Product schema
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Replit assigns a port
@@ -11,10 +11,10 @@ app.set("view engine", "ejs");
 
 app.use(express.static("public"));
 
-// 🏠 Home Route: Get all products from MongoDB
+//  Home Route: Get all products from MongoDB
 app.get("/", async (req, res) => {
     try {
-        const products = await AppleProduct.find(); // ✅ Fetch all products
+        const products = await AppleProduct.find(); //  Fetch all products
         res.render("home", { items: products });
     } catch (err) {
         console.error("⚠️ Error fetching products:", err);
@@ -22,12 +22,12 @@ app.get("/", async (req, res) => {
     }
 });
 
-// 📌 Detail Route: Get a product by its `id` (Number)
+//  Detail Route: Get a product by its `id` (Number)
 app.get("/detail", async (req, res) => {
     try {
-        const productId = parseInt(req.query.id); // ✅ Convert id from URL string to a number
+        const productId = parseInt(req.query.id); //  Convert id from URL string to a number
         console.log(`🔍 Searching for product with id: ${productId}`);
-        const product = await AppleProduct.findOne({ id: productId }); // ✅ Match as a number
+        const product = await AppleProduct.findOne({ id: productId }); // Match as a number
 
         if (product) {
             res.render("detail", { item: product });
@@ -41,10 +41,10 @@ app.get("/detail", async (req, res) => {
     }
 });
 
-// ❌ Extra Credit: Delete a Product by `id` (Number)
+// Extra Credit: Delete a Product by `id` (Number)
 app.get("/delete", async (req, res) => {
     try {
-        const productId = parseInt(req.query.id); // ✅ Convert id to Number
+        const productId = parseInt(req.query.id); //  Convert id to Number
         console.log(`🗑️ Deleting product with id: ${productId}`);
 
         // Check if product exists BEFORE deleting
