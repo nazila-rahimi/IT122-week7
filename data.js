@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "./config.js"; //  Import credentials securely
+import { MONGO_URI } from "./config.js"; // Import credentials securely
 
+// Connect to MongoDB without deprecated options
 mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     dbName: "sccproject"
 });
 

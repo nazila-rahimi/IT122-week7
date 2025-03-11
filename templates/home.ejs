@@ -1,26 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Products</title>
-</head>
-<body>
-    <h1>Apple Products</h1>
+    <title>React App Demo</title>
 
-    <% if (items.length > 0) { %>
-        <ul>
-            <% items.forEach(item => { %>
-                <li>
-                    <a href="/detail?id=<%= item.id %>">
-                        <%= item.name %> - $<%= item.price %>
-                    </a>
-                </li>
-            <% }); %>
-        </ul>
-    <% } else { %>
-        <p>No products found in the database.</p>
-    <% } %>
+    
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+    //  Get the items data from the server (ensuring proper JSON parsing)
+    let items = JSON.parse(`<%- JSON.stringify(items) %>`);
+
+    console.log("✅ Received items:", items); // Debugging in browser console
+
+    // Product List Component
+    const ProductList = ({ products }) => {
+        return (
+            <div>
+                <h2>Apple Products</h2>
+                <ul>
+                    {products.length > 0 ? (
+                        products.map((product) => (
+                            <li key={product.id}>
+                                <a href={`/detail?id=${product.id}`}>{product.name}</a>
+                            </li>
+                        ))
+                    ) : (
+                        <p>No products found.</p>
+                    )}
+                </ul>
+            </div>
+        );
+    };
+
+    // Main App Component
+    const App = () => {
+        return <ProductList products={items} />;
+    };
+
+    // Render React App inside "root" div
+    ReactDOM.render(<App />, document.getElementById('root'));
+</script>
 
 </body>
 </html>
