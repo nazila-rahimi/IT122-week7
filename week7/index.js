@@ -12,8 +12,8 @@ app.use(express.json()); // Allow JSON data parsing
 app.use(express.static("public")); // Serve static files
 
 // Set EJS as the view engine
-app.set("views", "./week7/templates");  // ✅ Correct path to EJS views
-app.set("view engine", "ejs");  // ✅ Ensure EJS is set as the template engine
+app.set("views", "./week7/templates");  //  Correct path to EJS views
+app.set("view engine", "ejs");  // Ensure EJS is set as the template engine
 
 
 //  Serve the Home Page
