@@ -2,12 +2,11 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import AppleProduct from "./models/appleproducts.js"; // MongoDB Schema
-import db from "./data.js"; // Ensure this file connects to MongoDB
+import db from "./data.js"; 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Allow JSON data parsing
 app.use(express.static("public")); // Serve static files
@@ -16,11 +15,9 @@ app.use(express.static("public")); // Serve static files
 app.set("views", "templates"); 
 app.set("view engine", "ejs");
 
-// ===================
-// 🌟 API ROUTES (For React)
-// ===================
 
-// 1️⃣ **Get All Items**
+
+
 app.get("/api/items", async (req, res) => {
     try {
         const products = await AppleProduct.find();
@@ -39,7 +36,7 @@ app.get("/api/items", async (req, res) => {
     }
 });
 
-// 2️⃣ **Get a Single Item by ID**
+//  Get a Single Item by ID
 app.get("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -56,7 +53,7 @@ app.get("/api/items/:id", async (req, res) => {
     }
 });
 
-// 3️⃣ **Add or Update an Item**
+//  Add or Update an Item
 app.post("/api/items", async (req, res) => {
     try {
         const { id, name, price, year } = req.body;
@@ -85,7 +82,7 @@ app.post("/api/items", async (req, res) => {
     }
 });
 
-// 4️⃣ **Delete an Item**
+//  **Delete an Item**
 app.delete("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -103,9 +100,7 @@ app.delete("/api/items/:id", async (req, res) => {
     }
 });
 
-// ===================
-// 🌟 Serve Home Page
-// ===================
+
 app.get("/", async (req, res) => {
     try {
         const products = await AppleProduct.find();
@@ -116,9 +111,7 @@ app.get("/", async (req, res) => {
     }
 });
 
-// ===================
-// 🌟 Start Server
-// ===================
+
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 }).on("error", (err) => {
