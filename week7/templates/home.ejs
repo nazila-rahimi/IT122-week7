@@ -14,99 +14,92 @@
 <body>
     <h1>Product Management</h1>
 
-    
-    <pre><%- items %></pre>
-
-  
     <div id="root"></div>
 
     <script type="text/babel">
-        console.log("✅ React is running!");
+        const { useState, useEffect } = React;
 
-        // Convert JSON string from server to JavaScript object
-        let items;
-        try {
-            items = JSON.parse(`<%- JSON.stringify(items) %>`);
-            console.log("✅ Product List:", items);
-        } catch (error) {
-            console.error("❌ Error parsing items:", error);
-            items = [];
-        }
-
-        // Product List Component
-        const ProductList = ({ products, onSelect }) => {
-            return (
-                <ul>
-                    {products.map((product) => (
-                        <li key={product.id}>
-                            <button onClick={() => onSelect(product)}>
-                                {product.name} - ${product.price}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            );
-        };
-
-        // Product Detail Component
-        const ProductDetail = ({ product, onClear, onChange }) => {
-            if (!product) {
-                return <p>Select a product to see details.</p>;
-            }
-
-            return (
-                <div>
-                    <h2>Edit Product Details</h2>
-                    <label>
-                        Name:
-                        <input type="text" value={product.name || ''} onChange={(e) => onChange("name", e.target.value)} />
-                    </label>
-                    <br />
-                    <label>
-                        Price:
-                        <input type="number" value={product.price || ''} onChange={(e) => onChange("price", e.target.value)} />
-                    </label>
-                    <br />
-                    <label>
-                        Year:
-                        <input type="number" value={product.year || ''} onChange={(e) => onChange("year", e.target.value)} />
-                    </label>
-                    <br />
-                    <button onClick={onClear}>Clear</button>
-                </div>
-            );
-        };
-
-        // Main App Component
         const App = () => {
-            const [selectedProduct, setSelectedProduct] = React.useState(null);
+            const [products, setProducts] = useState([]);
+            const [selectedProduct, setSelectedProduct] = useState(null);
+
+            //  Load data using useEffect
+            useEffect(() => {
+                fetch("/api/items")
+                    .then(res => res.json())
+                    .then(data => setProducts(data))
+                    .catch(err => console.error("❌ Error loading products:", err));
+            }, []);
 
             const handleSelect = (product) => {
                 setSelectedProduct({ ...product });
-            };
-
-            const handleClear = () => {
-                setSelectedProduct(null);
             };
 
             const handleChange = (field, value) => {
                 setSelectedProduct(prev => ({ ...prev, [field]: value }));
             };
 
+            const handleSave = () => {
+                fetch("/api/items", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(selectedProduct),
+                })
+                .then(res => res.json())
+                .then(() => {
+                    alert("Product saved!");
+                    setProducts(prev => prev.map(p => p.id === selectedProduct.id ? selectedProduct : p));
+                    setSelectedProduct(null);
+                })
+                .catch(err => console.error("❌ Error saving product:", err));
+            };
+
+            const handleDelete = () => {
+                fetch(`/api/items/${selectedProduct.id}`, { method: "DELETE" })
+                .then(res => res.json())
+                .then(() => {
+                    alert("Product deleted!");
+                    setProducts(prev => prev.filter(p => p.id !== selectedProduct.id));
+                    setSelectedProduct(null);
+                })
+                .catch(err => console.error("❌ Error deleting product:", err));
+            };
+
             return (
                 <div style={{ display: "flex", gap: "30px" }}>
                     <div>
                         <h2>Product List</h2>
-                        <ProductList products={items} onSelect={handleSelect} />
+                        <ul>
+                            {products.map((product) => (
+                                <li key={product.id}>
+                                    <button onClick={() => handleSelect(product)}>
+                                        {product.name} - ${product.price}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                     <div>
-                        <ProductDetail product={selectedProduct} onClear={handleClear} onChange={handleChange} />
+                        <h2>Product Details</h2>
+                        {selectedProduct ? (
+                            <div>
+                                <label>Name: <input type="text" value={selectedProduct.name} onChange={(e) => handleChange("name", e.target.value)} /></label>
+                                <br />
+                                <label>Price: <input type="number" value={selectedProduct.price} onChange={(e) => handleChange("price", e.target.value)} /></label>
+                                <br />
+                                <label>Year: <input type="number" value={selectedProduct.year} onChange={(e) => handleChange("year", e.target.value)} /></label>
+                                <br />
+                                <button onClick={handleSave}>Save</button>
+                                <button onClick={handleDelete} style={{ marginLeft: "10px", backgroundColor: "red", color: "white" }}>Delete</button>
+                            </div>
+                        ) : (
+                            <p>Select a product to edit.</p>
+                        )}
                     </div>
                 </div>
             );
         };
 
-        // Render React App
         ReactDOM.createRoot(document.getElementById("root")).render(<App />);
     </script>
 </body>

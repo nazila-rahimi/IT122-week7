@@ -12,31 +12,35 @@ app.use(express.json()); // Allow JSON data parsing
 app.use(express.static("public")); // Serve static files
 
 // Set EJS as the view engine
-app.set("views", "templates"); 
-app.set("view engine", "ejs");
+app.set("views", "./week7/templates");  // ✅ Correct path to EJS views
+app.set("view engine", "ejs");  // ✅ Ensure EJS is set as the template engine
 
 
+//  Serve the Home Page
+app.get("/", async (req, res) => {
+    try {
+        const products = await AppleProduct.find();
+        console.log("✅ Server-side products:", products); // Debugging
 
+        res.render("home", { items: JSON.stringify(products) }); //  Pass items as JSON
+    } catch (err) {
+        console.error("❌ Error fetching products:", err);
+        res.status(500).send("Error fetching products");
+    }
+});
 
+//  API: Get all products
 app.get("/api/items", async (req, res) => {
     try {
         const products = await AppleProduct.find();
-        const formattedItems = products.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            year: item.year
-        }));
-
-        console.log("✅ API Response:", formattedItems);
-        res.json(formattedItems);
+        res.json(products);
     } catch (error) {
         console.error("❌ Error fetching items:", error);
         res.status(500).json({ error: "Error retrieving data" });
     }
 });
 
-//  Get a Single Item by ID
+//  API: Get a Single Item by ID
 app.get("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -53,7 +57,7 @@ app.get("/api/items/:id", async (req, res) => {
     }
 });
 
-//  Add or Update an Item
+//  API: Add or Update an Item
 app.post("/api/items", async (req, res) => {
     try {
         const { id, name, price, year } = req.body;
@@ -82,7 +86,7 @@ app.post("/api/items", async (req, res) => {
     }
 });
 
-//  **Delete an Item**
+// API: Delete an Item
 app.delete("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -100,18 +104,7 @@ app.delete("/api/items/:id", async (req, res) => {
     }
 });
 
-
-app.get("/", async (req, res) => {
-    try {
-        const products = await AppleProduct.find();
-        res.render("home", { items: products });
-    } catch (err) {
-        console.error("❌ Error fetching products:", err);
-        res.status(500).send("Error fetching products");
-    }
-});
-
-
+// Start the Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 }).on("error", (err) => {
