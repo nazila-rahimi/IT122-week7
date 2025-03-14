@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+
+    <!-- Load React and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <h1>Product Management</h1>
+
+    <!-- Debugging: Check if items are being passed -->
+    <pre><%- items %></pre>
+
+    <!-- React Root Element -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        console.log("✅ React is running!");
+
+        // Convert JSON string from server to JavaScript object
+        let items;
+        try {
+            items = JSON.parse(`<%- JSON.stringify(items) %>`);
+            console.log("✅ Product List:", items);
+        } catch (error) {
+            console.error("❌ Error parsing items:", error);
+            items = [];
+        }
+
+        // Product List Component
+        const ProductList = ({ products, onSelect }) => {
+            return (
+                <ul>
+                    {products.map((product) => (
+                        <li key={product.id}>
+                            <button onClick={() => onSelect(product)}>
+                                {product.name} - ${product.price}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            );
+        };
+
+        // Product Detail Component
+        const ProductDetail = ({ product, onClear, onChange }) => {
+            if (!product) {
+                return <p>Select a product to see details.</p>;
+            }
+
+            return (
+                <div>
+                    <h2>Edit Product Details</h2>
+                    <label>
+                        Name:
+                        <input type="text" value={product.name || ''} onChange={(e) => onChange("name", e.target.value)} />
+                    </label>
+                    <br />
+                    <label>
+                        Price:
+                        <input type="number" value={product.price || ''} onChange={(e) => onChange("price", e.target.value)} />
+                    </label>
+                    <br />
+                    <label>
+                        Year:
+                        <input type="number" value={product.year || ''} onChange={(e) => onChange("year", e.target.value)} />
+                    </label>
+                    <br />
+                    <button onClick={onClear}>Clear</button>
+                </div>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const [selectedProduct, setSelectedProduct] = React.useState(null);
+
+            const handleSelect = (product) => {
+                setSelectedProduct({ ...product });
+            };
+
+            const handleClear = () => {
+                setSelectedProduct(null);
+            };
+
+            const handleChange = (field, value) => {
+                setSelectedProduct(prev => ({ ...prev, [field]: value }));
+            };
+
+            return (
+                <div style={{ display: "flex", gap: "30px" }}>
+                    <div>
+                        <h2>Product List</h2>
+                        <ProductList products={items} onSelect={handleSelect} />
+                    </div>
+                    <div>
+                        <ProductDetail product={selectedProduct} onClear={handleClear} onChange={handleChange} />
+                    </div>
+                </div>
+            );
+        };
+
+        // Render React App
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+</body>
+</html>
