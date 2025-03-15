@@ -1,15 +1,12 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const { Schema } = mongoose;
-
-const appleProductSchema = new Schema({
-  id: Number, // Changed from String to Number
-  name: { type: String, required: true },
-  type: String,
-  year: Number,
-  price: Number
+const appleProductSchema = new mongoose.Schema({
+    id: { type: Number, required: true, unique: true },
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    year: { type: Number }
 });
 
-const AppleProduct = mongoose.model("appleproducts", appleProductSchema); // Ensure collection name matches
+// Named export (not default export)
+export const AppleProduct = mongoose.model('AppleProduct', appleProductSchema);
 
-export default AppleProduct;

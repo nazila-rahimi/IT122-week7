@@ -1,8 +1,15 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import AppleProduct from "./models/appleproducts.js"; // MongoDB Schema
-import db from "./data.js"; 
+import { AppleProduct } from "./models/appleproducts.js"; // Correct named import
+import db from "./data.js"; // MongoDB connection setup
+import path from "path"; // Ensure path is imported
+import { fileURLToPath } from "url"; // For handling file paths in ESM
+import { dirname } from "path"; // For getting directory name
+
+// Get the current directory name (alternative to __dirname in ESM)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,24 +19,24 @@ app.use(express.json()); // Allow JSON data parsing
 app.use(express.static("public")); // Serve static files
 
 // Set EJS as the view engine
-app.set("views", "./week7/templates");  //  Correct path to EJS views
-app.set("view engine", "ejs");  // Ensure EJS is set as the template engine
+app.set("views", path.join(__dirname, "templates")); // ✅ Set the correct path to the templates folder
+app.set("view engine", "ejs"); // Ensure EJS is the view engine
 
-
-//  Serve the Home Page
+// ✅ Serve the Home Page
 app.get("/", async (req, res) => {
     try {
         const products = await AppleProduct.find();
         console.log("✅ Server-side products:", products); // Debugging
 
-        res.render("home", { items: JSON.stringify(products) }); //  Pass items as JSON
+        // Render the home.ejs page with products passed as JSON
+        res.render("home", { items: JSON.stringify(products) });
     } catch (err) {
         console.error("❌ Error fetching products:", err);
         res.status(500).send("Error fetching products");
     }
 });
 
-//  API: Get all products
+// ✅ API: Get all products
 app.get("/api/items", async (req, res) => {
     try {
         const products = await AppleProduct.find();
@@ -40,7 +47,7 @@ app.get("/api/items", async (req, res) => {
     }
 });
 
-//  API: Get a Single Item by ID
+// ✅ API: Get a Single Item by ID
 app.get("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -57,7 +64,7 @@ app.get("/api/items/:id", async (req, res) => {
     }
 });
 
-//  API: Add or Update an Item
+// ✅ API: Add or Update an Item
 app.post("/api/items", async (req, res) => {
     try {
         const { id, name, price, year } = req.body;
@@ -86,7 +93,7 @@ app.post("/api/items", async (req, res) => {
     }
 });
 
-// API: Delete an Item
+// ✅ API: Delete an Item
 app.delete("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -104,7 +111,7 @@ app.delete("/api/items/:id", async (req, res) => {
     }
 });
 
-// Start the Server
+// ✅ Start the Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 }).on("error", (err) => {

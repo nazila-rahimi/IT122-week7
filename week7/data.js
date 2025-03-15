@@ -1,17 +1,9 @@
-import mongoose from "mongoose";
-import { MONGO_URI } from "./config.js"; // Import credentials securely
+import mongoose from 'mongoose';
 
-// Connect to MongoDB without deprecated options
-mongoose.connect(MONGO_URI, {
-    dbName: "sccproject"
-});
+const MONGO_URI = "mongodb+srv://dbuser:Yosuf143@cluster0.cctfk.mongodb.net/sccproject?retryWrites=true&w=majority";
 
-mongoose.connection.on("connected", () => {
-    console.log("✅ Connected to MongoDB Atlas (sccproject)");
-});
-
-mongoose.connection.on("error", (err) => {
-    console.error("❌ MongoDB connection error:", err);
-});
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
 export default mongoose;

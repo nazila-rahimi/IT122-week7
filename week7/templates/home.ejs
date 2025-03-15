@@ -23,7 +23,7 @@
             const [products, setProducts] = useState([]);
             const [selectedProduct, setSelectedProduct] = useState(null);
 
-            //  Load data using useEffect
+            // ✅ Load data using useEffect
             useEffect(() => {
                 fetch("/api/items")
                     .then(res => res.json())
@@ -47,7 +47,7 @@
                 })
                 .then(res => res.json())
                 .then(() => {
-                    alert("Product saved!");
+                    alert("✅ Product saved!");
                     setProducts(prev => prev.map(p => p.id === selectedProduct.id ? selectedProduct : p));
                     setSelectedProduct(null);
                 })
@@ -58,7 +58,7 @@
                 fetch(`/api/items/${selectedProduct.id}`, { method: "DELETE" })
                 .then(res => res.json())
                 .then(() => {
-                    alert("Product deleted!");
+                    alert("✅ Product deleted!");
                     setProducts(prev => prev.filter(p => p.id !== selectedProduct.id));
                     setSelectedProduct(null);
                 })
