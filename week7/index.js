@@ -1,53 +1,54 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import { AppleProduct } from "./models/appleproducts.js"; // Correct named import
+import { AppleProduct } from "./models/appleproducts.js"; 
+
 import db from "./data.js"; // MongoDB connection setup
-import path from "path"; // Ensure path is imported
+import path from "path"; 
 import { fileURLToPath } from "url"; // For handling file paths in ESM
 import { dirname } from "path"; // For getting directory name
 
-// Get the current directory name (alternative to __dirname in ESM)
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // Allow cross-origin requests
+app.use(cors()); 
 app.use(express.json()); // Allow JSON data parsing
 app.use(express.static("public")); // Serve static files
 
 // Set EJS as the view engine
-app.set("views", path.join(__dirname, "templates")); // ✅ Set the correct path to the templates folder
+app.set("views", path.join(__dirname, "templates")); // Set the correct path to the templates folder
 app.set("view engine", "ejs"); // Ensure EJS is the view engine
 
-// ✅ Serve the Home Page
+// Serve the Home Page
 app.get("/", async (req, res) => {
     try {
         const products = await AppleProduct.find();
-        console.log("✅ Server-side products:", products); // Debugging
+        console.log(" Server-side products:", products); // Debugging
 
         // Render the home.ejs page with products passed as JSON
         res.render("home", { items: JSON.stringify(products) });
     } catch (err) {
-        console.error("❌ Error fetching products:", err);
+        console.error(" Error fetching products:", err);
         res.status(500).send("Error fetching products");
     }
 });
 
-// ✅ API: Get all products
+//  API: Get all products
 app.get("/api/items", async (req, res) => {
     try {
         const products = await AppleProduct.find();
         res.json(products);
     } catch (error) {
-        console.error("❌ Error fetching items:", error);
+        console.error(" Error fetching items:", error);
         res.status(500).json({ error: "Error retrieving data" });
     }
 });
 
-// ✅ API: Get a Single Item by ID
+//  API: Get a Single Item by ID
 app.get("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -59,12 +60,12 @@ app.get("/api/items/:id", async (req, res) => {
 
         res.json(product);
     } catch (error) {
-        console.error("❌ Error fetching item:", error);
+        console.error(" Error fetching item:", error);
         res.status(500).json({ error: "Error retrieving item" });
     }
 });
 
-// ✅ API: Add or Update an Item
+//  API: Add or Update an Item
 app.post("/api/items", async (req, res) => {
     try {
         const { id, name, price, year } = req.body;
@@ -78,22 +79,22 @@ app.post("/api/items", async (req, res) => {
         if (existingProduct) {
             // Update existing item
             await AppleProduct.updateOne({ id }, { name, price, year });
-            console.log(`✅ Updated item: ${id}`);
+            console.log(`Updated item: ${id}`);
             res.json({ id, name, price, year });
         } else {
             // Add new item
             const newItem = new AppleProduct({ id, name, price, year });
             await newItem.save();
-            console.log(`✅ New item added: ${id}`);
+            console.log(`New item added: ${id}`);
             res.status(201).json(newItem);
         }
     } catch (error) {
-        console.error("❌ Error saving item:", error);
+        console.error(" Error saving item:", error);
         res.status(500).json({ error: "Error saving item" });
     }
 });
 
-// ✅ API: Delete an Item
+//  API: Delete an Item
 app.delete("/api/items/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -103,22 +104,22 @@ app.delete("/api/items/:id", async (req, res) => {
             return res.status(404).json({ error: "Item not found" });
         }
 
-        console.log(`✅ Deleted item: ${productId}`);
+        console.log(` Deleted item: ${productId}`);
         res.json({ message: "Item deleted successfully" });
     } catch (error) {
-        console.error("❌ Error deleting item:", error);
+        console.error("Error deleting item:", error);
         res.status(500).json({ error: "Error deleting item" });
     }
 });
 
-// ✅ Start the Server
+//  Start the Server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 }).on("error", (err) => {
     if (err.code === "EADDRINUSE") {
-        console.error("❌ Port 3000 is already in use. Use `pkill -f node` in Replit Shell to stop existing server.");
+        console.error(" Port 3000 is already in use. Use `pkill -f node` in Replit Shell to stop existing server.");
         process.exit(1);
     } else {
-        console.error("❌ Server error:", err);
+        console.error(" Server error:", err);
     }
 });

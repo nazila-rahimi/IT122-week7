@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Management</title>
 
-    <!-- Load React and Babel -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -23,12 +22,12 @@
             const [products, setProducts] = useState([]);
             const [selectedProduct, setSelectedProduct] = useState(null);
 
-            // ✅ Load data using useEffect
+            //  Load data using useEffect
             useEffect(() => {
                 fetch("/api/items")
                     .then(res => res.json())
                     .then(data => setProducts(data))
-                    .catch(err => console.error("❌ Error loading products:", err));
+                    .catch(err => console.error(" Error loading products:", err));
             }, []);
 
             const handleSelect = (product) => {
@@ -47,22 +46,22 @@
                 })
                 .then(res => res.json())
                 .then(() => {
-                    alert("✅ Product saved!");
+                    alert("Product saved!");
                     setProducts(prev => prev.map(p => p.id === selectedProduct.id ? selectedProduct : p));
                     setSelectedProduct(null);
                 })
-                .catch(err => console.error("❌ Error saving product:", err));
+                .catch(err => console.error(" Error saving product:", err));
             };
 
             const handleDelete = () => {
                 fetch(`/api/items/${selectedProduct.id}`, { method: "DELETE" })
                 .then(res => res.json())
                 .then(() => {
-                    alert("✅ Product deleted!");
+                    alert(" Product deleted!");
                     setProducts(prev => prev.filter(p => p.id !== selectedProduct.id));
                     setSelectedProduct(null);
                 })
-                .catch(err => console.error("❌ Error deleting product:", err));
+                .catch(err => console.error("Error deleting product:", err));
             };
 
             return (
