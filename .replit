@@ -1,6 +1,6 @@
-entrypoint = "week7/index.js"
+entrypoint = "week8/index.ts"
 modules = ["nodejs-20"]
-hidden = [".config", "package-lock.json"]
+hidden = [".config", "package-lock.json", "dist"]
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
@@ -12,7 +12,7 @@ channel = "stable-24_05"
 language = "nodejs"
 
 [deployment]
-run = "cd week7 && node index.js"
+run = "cd week8 && npm run compile && npm run start"
 
 deploymentTarget = "cloudrun"
 ignorePorts = false
